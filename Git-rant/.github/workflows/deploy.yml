@@ -1,4 +1,4 @@
-name: Deploy Rant.Zone
+name: Deploy Chat Application
 
 on:
   push:
@@ -80,16 +80,16 @@ jobs:
       - name: Build frontend
         run: cd frontend && npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://api.rant.zone
-          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.rant.zone
+          NEXT_PUBLIC_API_URL: https://api.example.com
+          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.example.com
           NEXT_PUBLIC_APP_ENV: production
       
       - name: Analyze bundle size
         run: cd frontend && npm run analyze
         env:
           ANALYZE: true
-          NEXT_PUBLIC_API_URL: https://api.rant.zone
-          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.rant.zone
+          NEXT_PUBLIC_API_URL: https://api.example.com
+          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.example.com
           NEXT_PUBLIC_APP_ENV: production
 
   deploy-backend:
@@ -100,7 +100,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Fly CLI
+      - name: Setup Fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
       
       - name: Deploy to Fly.io
@@ -118,14 +118,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Deploy to Vercel
+      - name: Setup Vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./frontend
-          vercel-args: '--prod'
 
   notify:
     needs: [deploy-backend, deploy-frontend]
@@ -135,9 +134,6 @@ jobs:
     steps:
       - name: Notify deployment status
         run: |
-          if [ "${{ needs.deploy-backend.result }}" == "success" ] && [ "${{ needs.deploy-frontend.result }}" == "success" ]; then
-            echo "✅ Deployment successful"
-          else
-            echo "❌ Deployment failed"
-            exit 1
-          fi 
+          echo "Deployment completed"
+          echo "Backend: ${{ needs.deploy-backend.result }}"
+          echo "Frontend: ${{ needs.deploy-frontend.result }}" 

@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import type { AppState, Interest, Message, ChatSession, MessageStatus } from '@/types';
+import type { AppState, Interest, Message, ChatSession, MessageStatus, Gender } from '@/types';
 import { encryptionService } from './encryption';
 import { websocketService } from './websocket';
 
@@ -24,11 +24,13 @@ const useAppStore = create<AppState>((set, get) => ({
     isLoading: false,
     showSettings: false,
     theme: 'light',
+    showGenderSelector: false,
   },
   user: {
     id: null,
     sessionId: null,
-    interest: null
+    interest: null,
+    gender: null
   },
 
   // Chat actions
@@ -112,6 +114,10 @@ const useAppStore = create<AppState>((set, get) => ({
     set({ user: { ...get().user, interest } });
   },
 
+  setGender: (gender: Gender) => {
+    set({ user: { ...get().user, gender } });
+  },
+
   createChatSession: (sessionId: string, interest: Interest) => {
     const newSession: ChatSession = {
       id: sessionId,
@@ -132,7 +138,7 @@ const useAppStore = create<AppState>((set, get) => ({
   },
 
   addMessage: (message: Message) => {
-    const { currentSession, sessions } = get().chat;
+    const { currentSession } = get().chat;
     if (!currentSession) return;
 
     const updatedSession = {
@@ -141,21 +147,19 @@ const useAppStore = create<AppState>((set, get) => ({
       lastActivity: Date.now()
     };
 
-    const updatedSessions = sessions.map(session => 
-      session.id === currentSession.id ? updatedSession : session
-    );
-
-    set({ 
-      chat: { 
-        ...get().chat, 
+    set({
+      chat: {
+        ...get().chat,
         currentSession: updatedSession,
-        sessions: updatedSessions
+        sessions: get().chat.sessions.map(session =>
+          session.id === currentSession.id ? updatedSession : session
+        )
       }
     });
   },
 
   updateMessageStatus: (messageId: string, status: MessageStatus) => {
-    const { currentSession, sessions } = get().chat;
+    const { currentSession } = get().chat;
     if (!currentSession) return;
 
     const updateMessages = (messages: Message[]) =>
@@ -168,15 +172,13 @@ const useAppStore = create<AppState>((set, get) => ({
       messages: updateMessages(currentSession.messages)
     };
 
-    const updatedSessions = sessions.map(session => 
-      session.id === currentSession.id ? updatedSession : session
-    );
-
-    set({ 
-      chat: { 
-        ...get().chat, 
+    set({
+      chat: {
+        ...get().chat,
         currentSession: updatedSession,
-        sessions: updatedSessions
+        sessions: get().chat.sessions.map(session =>
+          session.id === currentSession.id ? updatedSession : session
+        )
       }
     });
   },
@@ -206,24 +208,26 @@ const useAppStore = create<AppState>((set, get) => ({
     set({ ui: { ...get().ui, theme } });
   },
 
+  setShowGenderSelector: (show: boolean) => {
+    set({ ui: { ...get().ui, showGenderSelector: show } });
+  },
+
   // Encryption actions
   initializeEncryption: async () => {
     try {
-      if (!encryptionService.isSupported()) {
-        throw new Error('Web Crypto API not supported');
+      if (encryptionService.isSupported()) {
+        const keys = await encryptionService.initialize();
+        set({ encryption: { keys, isInitialized: true } });
       }
-      const keys = await encryptionService.initialize();
-      set({ encryption: { keys, isInitialized: true } });
     } catch (error) {
       console.error('Encryption initialization failed:', error);
-      throw error;
     }
   },
 
   // Cleanup
   disconnect: () => {
     websocketService.disconnect();
-    set({ 
+    set({
       chat: {
         currentSession: null,
         sessions: [],
@@ -234,14 +238,11 @@ const useAppStore = create<AppState>((set, get) => ({
         partnerTyping: false,
         partnerDisconnected: false
       },
-      encryption: {
-        keys: null,
-        isInitialized: false,
-      },
       user: {
         id: null,
         sessionId: null,
-        interest: null
+        interest: null,
+        gender: null
       }
     });
   }

@@ -1,5 +1,7 @@
 export type Interest = 'science' | 'tech' | 'politics' | 'personal';
 
+export type Gender = 'male' | 'female' | 'other' | 'prefer-not-to-say';
+
 export type MessageStatus = 'sending' | 'sent' | 'failed';
 
 export interface Message {
@@ -57,6 +59,7 @@ export interface UserState {
   id: string | null;
   sessionId: string | null;
   interest: Interest | null;
+  gender: Gender | null;
 }
 
 export interface AppState {
@@ -69,6 +72,7 @@ export interface AppState {
     isLoading: boolean;
     showSettings: boolean;
     theme: 'light' | 'dark';
+    showGenderSelector: boolean;
   };
   user: UserState;
 
@@ -83,6 +87,7 @@ export interface AppState {
   setSessionId: (sessionId: string) => void;
   setUserId: (userId: string) => void;
   setInterest: (interest: Interest) => void;
+  setGender: (gender: Gender) => void;
   createChatSession: (sessionId: string, interest: Interest) => void;
   addMessage: (message: Message) => void;
   updateMessageStatus: (messageId: string, status: MessageStatus) => void;
@@ -94,6 +99,7 @@ export interface AppState {
   setError: (error: string | null) => void;
   setShowSettings: (showSettings: boolean) => void;
   setTheme: (theme: 'light' | 'dark') => void;
+  setShowGenderSelector: (show: boolean) => void;
 
   // Encryption actions
   initializeEncryption: () => Promise<void>;

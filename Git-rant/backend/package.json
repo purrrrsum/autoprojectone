@@ -1,7 +1,7 @@
 {
-  "name": "rant-zone-backend",
+  "name": "chat-backend",
   "version": "1.0.0",
-  "description": "Anonymous ephemeral chat platform backend",
+  "description": "Backend application",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
