@@ -12,8 +12,8 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://api.rant.zone",
-    "NEXT_PUBLIC_WEBSOCKET_URL": "wss://api.rant.zone",
+    "NEXT_PUBLIC_API_URL": "https://api.example.com",
+    "NEXT_PUBLIC_WEBSOCKET_URL": "wss://api.example.com",
     "NEXT_PUBLIC_APP_ENV": "production"
   },
   "headers": [
@@ -42,7 +42,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://api.rant.zone/api/$1"
+      "destination": "https://api.example.com/api/$1"
     }
   ]
 } 

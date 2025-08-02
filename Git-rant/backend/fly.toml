@@ -2,13 +2,12 @@
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 
-app = "rant-zone-backend"
+app = "chat-app-backend"
 primary_region = "iad"
 
 [build]
 
 [env]
-  NODE_ENV = "production"
   PORT = "3001"
   HOST = "0.0.0.0"
 
