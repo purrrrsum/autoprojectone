@@ -62,8 +62,8 @@ npm run dev
 
 ### Frontend (.env.local)
 ```env
-NEXT_PUBLIC_API_URL=https://api.chatapp.com
-NEXT_PUBLIC_WEBSOCKET_URL=wss://api.chatapp.com
+NEXT_PUBLIC_API_URL=https://api.rant.zone
+NEXT_PUBLIC_WEBSOCKET_URL=wss://api.rant.zone
 NEXT_PUBLIC_APP_ENV=development
 ```
 
@@ -120,3 +120,65 @@ NODE_ENV=production
 ## 📄 License
 
 MIT License - see LICENSE file for details 
+
+## 🔐 Authentication & Deployment Setup
+
+### Centralized Configuration
+
+This project uses a centralized authentication system for secure deployment:
+
+#### Files Created:
+- `config/production.env` - Environment variables for production
+- `config/auth-config.json` - Structured configuration for all services
+- `scripts/deploy.js` - Automated deployment script
+- `scripts/setup-github-secrets.js` - GitHub Secrets setup guide
+
+#### Quick Setup:
+
+1. **Update Configuration**:
+   ```bash
+   # Edit config/auth-config.json with your actual values
+   # Replace all "your-*" placeholders with real credentials
+   ```
+
+2. **Set GitHub Secrets**:
+   ```bash
+   node scripts/setup-github-secrets.js
+   # Copy the output to GitHub Repository Secrets
+   ```
+
+3. **Deploy**:
+   ```bash
+   # Manual deployment
+   node scripts/deploy.js
+   
+   # Or push to main branch for automated deployment
+   git push origin main
+   ```
+
+#### Required Secrets:
+
+**Vercel:**
+- `VERCEL_TOKEN`
+- `VERCEL_PROJECT_ID` 
+- `VERCEL_ORG_ID`
+
+**Fly.io:**
+- `FLY_API_TOKEN`
+- `FLY_APP_NAME`
+
+**Database:**
+- `DATABASE_URL` (Railway PostgreSQL)
+
+**Redis:**
+- `REDIS_URL` (Upstash)
+
+**Security:**
+- `JWT_SECRET`
+- `ENCRYPTION_KEY`
+
+### Security Notes:
+- Never commit `config/production.env` or `config/auth-config.json`
+- Use GitHub Secrets for CI/CD
+- Rotate secrets regularly
+- Monitor access logs 

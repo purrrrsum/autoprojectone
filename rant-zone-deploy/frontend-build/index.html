@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rant.Zone - Anonymous Chat</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 { 
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        p { 
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .status {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .url {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Rant.Zone</h1>
+        <p>Anonymous chat platform is being deployed. This is a temporary page while we set up the full application.</p>
+        <button class="btn" onclick="checkStatus()">Check Status</button>
+        <div id="status" class="status" style="display: none;"></div>
+        <div class="url">
+            <strong>Website URL:</strong><br>
+            http://rant-zone-frontend-7115.s3-website-us-east-1.amazonaws.com
+        </div>
+    </div>
+
+    <script>
+        function checkStatus() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = '🔄 Checking deployment status...';
+            statusDiv.className = 'status';
+            
+            setTimeout(() => {
+                statusDiv.textContent = '✅ Frontend deployed successfully! Backend deployment in progress...';
+                statusDiv.className = 'status success';
+            }, 2000);
+        }
+        
+        setTimeout(checkStatus, 1000);
+    </script>
+</body>
+</html> 

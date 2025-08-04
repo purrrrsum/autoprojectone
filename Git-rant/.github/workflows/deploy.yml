@@ -80,16 +80,16 @@ jobs:
       - name: Build frontend
         run: cd frontend && npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://api.example.com
-          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.example.com
+          NEXT_PUBLIC_API_URL: https://api.chatapp.com
+          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.chatapp.com
           NEXT_PUBLIC_APP_ENV: production
       
       - name: Analyze bundle size
         run: cd frontend && npm run analyze
         env:
           ANALYZE: true
-          NEXT_PUBLIC_API_URL: https://api.example.com
-          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.example.com
+          NEXT_PUBLIC_API_URL: https://api.chatapp.com
+          NEXT_PUBLIC_WEBSOCKET_URL: wss://api.chatapp.com
           NEXT_PUBLIC_APP_ENV: production
 
   deploy-backend:

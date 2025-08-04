@@ -1,0 +1,242 @@
+{
+  "aws": {
+    "region": "us-east-1",
+    "account_id": "your-aws-account-id",
+    "profile": "default"
+  },
+  "frontend": {
+    "s3": {
+      "bucket_name": "rant-zone-frontend",
+      "website_configuration": {
+        "index_document": "index.html",
+        "error_document": "error.html"
+      },
+      "cors_configuration": {
+        "allowed_origins": ["https://rant.zone", "https://www.rant.zone"],
+        "allowed_methods": ["GET", "HEAD"],
+        "allowed_headers": ["*"],
+        "max_age_seconds": 3000
+      }
+    },
+    "cloudfront": {
+      "distribution_id": "your-cloudfront-distribution-id",
+      "domain_name": "d1234567890abc.cloudfront.net",
+      "aliases": ["rant.zone", "www.rant.zone"],
+      "ssl_certificate_arn": "arn:aws:acm:us-east-1:your-account:certificate/your-cert-id",
+      "behaviors": {
+        "default": {
+          "viewer_protocol_policy": "redirect-to-https",
+          "cache_policy_id": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+          "origin_request_policy_id": "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf"
+        }
+      }
+    }
+  },
+  "backend": {
+    "ecs": {
+      "cluster_name": "rant-zone-cluster",
+      "service_name": "rant-zone-backend",
+      "task_definition": "rant-zone-backend-task",
+      "cpu": "256",
+      "memory": "512",
+      "desired_count": 2,
+      "min_count": 1,
+      "max_count": 10,
+      "auto_scaling": {
+        "enabled": true,
+        "cpu_threshold": 70,
+        "memory_threshold": 80
+      }
+    },
+    "load_balancer": {
+      "name": "rant-zone-alb",
+      "target_group": "rant-zone-backend-tg",
+      "health_check_path": "/health",
+      "health_check_interval": 30,
+      "health_check_timeout": 5,
+      "healthy_threshold": 2,
+      "unhealthy_threshold": 3
+    },
+    "ecr": {
+      "repository_name": "rant-zone-backend",
+      "image_tag": "latest"
+    }
+  },
+  "database": {
+    "rds": {
+      "instance_class": "db.t3.micro",
+      "engine": "postgres",
+      "engine_version": "15.4",
+      "allocated_storage": 20,
+      "max_allocated_storage": 100,
+      "storage_type": "gp2",
+      "storage_encrypted": true,
+      "backup_retention_period": 7,
+      "backup_window": "03:00-04:00",
+      "maintenance_window": "sun:04:00-sun:05:00",
+      "multi_az": false,
+      "deletion_protection": true,
+      "database_name": "rantzone",
+      "master_username": "postgres",
+      "master_password": "your-secure-password-here"
+    }
+  },
+  "cache": {
+    "elasticache": {
+      "cluster_name": "rant-zone-redis",
+      "node_type": "cache.t3.micro",
+      "num_cache_nodes": 1,
+      "engine": "redis",
+      "engine_version": "7.0",
+      "port": 6379,
+      "parameter_group_name": "default.redis7",
+      "subnet_group_name": "rant-zone-redis-subnet-group",
+      "security_group_name": "rant-zone-redis-sg"
+    }
+  },
+  "networking": {
+    "vpc": {
+      "name": "rant-zone-vpc",
+      "cidr_block": "10.0.0.0/16",
+      "availability_zones": ["us-east-1a", "us-east-1b"],
+      "public_subnets": [
+        {
+          "name": "rant-zone-public-1a",
+          "cidr": "10.0.1.0/24",
+          "az": "us-east-1a"
+        },
+        {
+          "name": "rant-zone-public-1b", 
+          "cidr": "10.0.2.0/24",
+          "az": "us-east-1b"
+        }
+      ],
+      "private_subnets": [
+        {
+          "name": "rant-zone-private-1a",
+          "cidr": "10.0.10.0/24",
+          "az": "us-east-1a"
+        },
+        {
+          "name": "rant-zone-private-1b",
+          "cidr": "10.0.11.0/24", 
+          "az": "us-east-1b"
+        }
+      ]
+    },
+    "route53": {
+      "hosted_zone_id": "your-hosted-zone-id",
+      "domain_name": "rant.zone",
+      "api_subdomain": "api.rant.zone",
+      "www_subdomain": "www.rant.zone"
+    }
+  },
+  "security": {
+    "certificates": {
+      "domain": "rant.zone",
+      "subject_alternative_names": ["*.rant.zone", "www.rant.zone", "api.rant.zone"]
+    },
+    "waf": {
+      "name": "rant-zone-waf",
+      "rules": [
+        {
+          "name": "RateLimitRule",
+          "priority": 1,
+          "rate_limit": 2000,
+          "time_window": 300
+        },
+        {
+          "name": "BlockedIPsRule", 
+          "priority": 2,
+          "blocked_ips": []
+        }
+      ]
+    }
+  },
+  "monitoring": {
+    "cloudwatch": {
+      "log_groups": [
+        {
+          "name": "/aws/ecs/rant-zone-backend",
+          "retention_days": 30
+        },
+        {
+          "name": "/aws/rds/rant-zone-db",
+          "retention_days": 30
+        }
+      ],
+      "alarms": {
+        "cpu_utilization": {
+          "threshold": 80,
+          "evaluation_periods": 2,
+          "period": 300
+        },
+        "memory_utilization": {
+          "threshold": 80,
+          "evaluation_periods": 2,
+          "period": 300
+        },
+        "database_connections": {
+          "threshold": 80,
+          "evaluation_periods": 2,
+          "period": 300
+        }
+      }
+    }
+  },
+  "ci_cd": {
+    "codebuild": {
+      "project_name": "rant-zone-build",
+      "buildspec_file": "buildspec.yml",
+      "environment": {
+        "type": "LINUX_CONTAINER",
+        "image": "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+        "compute_type": "BUILD_GENERAL1_SMALL"
+      }
+    },
+    "codepipeline": {
+      "name": "rant-zone-pipeline",
+      "stages": [
+        {
+          "name": "Source",
+          "provider": "CodeCommit",
+          "repository": "rant-zone-repo",
+          "branch": "main"
+        },
+        {
+          "name": "Build",
+          "provider": "CodeBuild",
+          "project_name": "rant-zone-build"
+        },
+        {
+          "name": "Deploy",
+          "provider": "ECS",
+          "cluster_name": "rant-zone-cluster",
+          "service_name": "rant-zone-backend"
+        }
+      ]
+    }
+  },
+  "environment": {
+    "production": {
+      "NODE_ENV": "production",
+      "PORT": "3001",
+      "HOST": "0.0.0.0",
+      "LOG_LEVEL": "info",
+      "DATABASE_URL": "postgresql://postgres:your-password@rant-zone-db.cluster-xyz.us-east-1.rds.amazonaws.com:5432/rantzone",
+      "REDIS_URL": "redis://rant-zone-redis.xyz.us-east-1.cache.amazonaws.com:6379",
+      "JWT_SECRET": "your-super-secret-jwt-key-here",
+      "ENCRYPTION_KEY": "your-256-bit-encryption-key-base64",
+      "ALLOWED_ORIGINS": "https://rant.zone,https://www.rant.zone",
+      "RATE_LIMIT_MAX": 100,
+      "RATE_LIMIT_WINDOW_MS": 900000,
+      "WS_HEARTBEAT_INTERVAL": 30000,
+      "WS_CONNECTION_TIMEOUT": 60000,
+      "MODERATION_ENABLED": "true",
+      "MAX_MESSAGE_LENGTH": 500,
+      "MAX_MESSAGES_PER_MINUTE": 10,
+      "MESSAGE_CLEANUP_INTERVAL": 3600000,
+      "MESSAGE_EXPIRY_DAYS": 30
+    }
+  }
+} 
