@@ -1,0 +1,49 @@
+version: 0.2
+
+# Use the specific Amazon Linux 2 Standard 4.0 image version
+# This provides Docker support and ensures reproducible builds
+env:
+  image: aws/codebuild/amazonlinux-x86_64-standard:4.0-22.10.27
+
+phases:
+  pre_build:
+    commands:
+      - echo "=== Pre-build Phase ==="
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 224776848598.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=224776848598.dkr.ecr.us-east-1.amazonaws.com/rant-zone-backend
+      - IMAGE_TAG=latest
+      - echo "Repository URI: $REPOSITORY_URI"
+      - echo "Image Tag: $IMAGE_TAG"
+  build:
+    commands:
+      - echo "=== Build Phase ==="
+      - echo "Build started on $(date)"
+      - echo "Current directory: $(pwd)"
+      - echo "Building the Docker image..."
+      - cd backend
+      - echo "Building from directory: $(pwd)"
+      - echo "Dockerfile contents:"
+      - head -10 Dockerfile.aws
+      - docker build -f Dockerfile.aws -t $REPOSITORY_URI:$IMAGE_TAG .
+      - echo "Docker image built successfully"
+  post_build:
+    commands:
+      - echo "=== Post-build Phase ==="
+      - echo "Build completed on $(date)"
+      - echo "Pushing the Docker image to ECR..."
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo "Docker image pushed successfully"
+      - echo "Writing image definitions file..."
+      - printf '[{"name":"rant-zone-backend","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - echo "Image definitions file created"
+      - echo "=== Build Process Complete ==="
+
+artifacts:
+  files:
+    - imagedefinitions.json
+  discard-paths: no
+
+cache:
+  paths:
+    - '/root/.docker/**/*'
