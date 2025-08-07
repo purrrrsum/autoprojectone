@@ -1,0 +1,60 @@
+{
+  "name": "project-webapp",
+  "version": "1.0.0",
+  "description": "Advanced anonymous chat platform with AWS deployment capabilities",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "docker:build": "cd backend && docker build -f Dockerfile.aws -t project-webapp-backend .",
+    "docker:run": "docker run -p 3001:3001 project-webapp-backend",
+    "docker:compose": "docker-compose up -d",
+    "docker:compose:down": "docker-compose down",
+    "docker:compose:logs": "docker-compose logs -f",
+    "aws:deploy": "powershell -ExecutionPolicy Bypass -File scripts\\deploy-backend-master.ps1",
+    "aws:setup": "powershell -ExecutionPolicy Bypass -File scripts\\setup-codebuild-simple.ps1",
+    "aws:test": "powershell -ExecutionPolicy Bypass -File scripts\\test-codebuild.ps1",
+    "aws:deploy:complete": "powershell -ExecutionPolicy Bypass -File scripts\\deploy-complete.ps1"
+  },
+  "keywords": [
+    "chat",
+    "anonymous",
+    "websocket",
+    "nextjs",
+    "nodejs",
+    "aws",
+    "docker",
+    "typescript"
+  ],
+  "author": "Project WebApp Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/purrrrsum/autoprojectone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/purrrrsum/autoprojectone/issues"
+  },
+  "homepage": "https://github.com/purrrrsum/autoprojectone#readme"
+}
