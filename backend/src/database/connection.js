@@ -8,6 +8,37 @@ let redisClient = null;
 
 async function setupDatabase() {
   try {
+    // First, connect to the default postgres database to create our database
+    const defaultPool = new Pool({
+      connectionString: process.env.DATABASE_URL.replace('/rant_zone', '/postgres'),
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      max: 5,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+    });
+
+    try {
+      const client = await defaultPool.connect();
+      
+      // Check if rant_zone database exists
+      const result = await client.query("SELECT 1 FROM pg_database WHERE datname = 'rant_zone'");
+      
+      if (result.rows.length === 0) {
+        console.log('Creating rant_zone database...');
+        await client.query('CREATE DATABASE rant_zone');
+        console.log('Database rant_zone created successfully!');
+      } else {
+        console.log('Database rant_zone already exists.');
+      }
+      
+      client.release();
+    } catch (error) {
+      console.error('Error creating database:', error);
+    } finally {
+      await defaultPool.end();
+    }
+
+    // Now connect to the rant_zone database
     pgPool = new Pool({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -19,7 +50,7 @@ async function setupDatabase() {
     const client = await pgPool.connect();
     await client.query('SELECT NOW()');
     client.release();
-    console.log('PostgreSQL connected');
+    console.log('PostgreSQL connected to rant_zone database');
 
     redisClient = createClient({
       url: process.env.REDIS_URL,
