@@ -5,8 +5,8 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
 RUN yum update -y && \
     yum install -y curl tar gzip xz
 
-# Install Node.js 18 from official binary distribution
-RUN curl -fsSL https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
+# Install Node.js 16 from official binary distribution (compatible with glibc 2.26)
+RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
 
 # Verify Node.js installation
 RUN node --version && npm --version
@@ -32,8 +32,8 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
 # Install runtime dependencies including tar and xz
 RUN yum update -y && yum install -y curl tar gzip xz
 
-# Install Node.js 18 from official binary distribution
-RUN curl -fsSL https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
+# Install Node.js 16 from official binary distribution (compatible with glibc 2.26)
+RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
 
 # Install dumb-init for proper signal handling
 RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
