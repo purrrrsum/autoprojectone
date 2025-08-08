@@ -12,4 +12,4 @@ async function initializeRedis() {
   return redisClient;
 }
 
-module.exports = { initializeRedis }; 
+module.exports = { initializeRedis, redisClient }; 
