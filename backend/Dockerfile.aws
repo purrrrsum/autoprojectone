@@ -1,67 +1,44 @@
-# Multi-stage build for AWS ECS deployment
+# Multi-stage build for AWS ECS deployment (AL2 + Node 16, glibc-compatible)
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
 
-# Update system and install build dependencies
-RUN yum update -y && \
-    yum install -y curl tar gzip xz
-
-# Install Node.js 16 from official binary distribution (compatible with glibc 2.26)
-RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
-
-# Verify Node.js installation
-RUN node --version && npm --version
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install --omit=dev && npm cache clean --force
-
-# Copy source code
-COPY . .
-
-# Create non-root user
-RUN useradd -r -s /bin/false nodejs
-
-# Production stage
-FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
-
-# Install runtime dependencies including tar and xz
+# Install required tools
 RUN yum update -y && yum install -y curl tar gzip xz
 
-# Install Node.js 16 from official binary distribution (compatible with glibc 2.26)
-RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
+# Install Node.js 16 (compatible with glibc 2.26 on AL2)
+RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz \
+  | tar -xJ -C /usr/local --strip-components=1
 
-# Install dumb-init for proper signal handling
-RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
-RUN chmod +x /usr/local/bin/dumb-init
+# Verify
+RUN node --version && npm --version
 
-# Create app directory
 WORKDIR /app
-
-# Create non-root user
+COPY package*.json ./
+RUN npm install --omit=dev && npm cache clean --force
+COPY . .
 RUN useradd -r -s /bin/false nodejs
 
-# Copy built application from builder stage
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
+RUN yum update -y && yum install -y curl tar gzip xz
+
+# Install Node 16 in production too
+RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz \
+  | tar -xJ -C /usr/local --strip-components=1
+
+# dumb-init
+RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64 \
+  && chmod +x /usr/local/bin/dumb-init
+
+WORKDIR /app
+RUN useradd -r -s /bin/false nodejs
+
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/src ./src
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
 
-# Switch to non-root user
 USER nodejs
-
-# Expose port
 EXPOSE 3001
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
-# Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
-
-# Start the application
 CMD ["node", "src/index.js"]
