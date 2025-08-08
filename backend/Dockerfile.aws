@@ -1,9 +1,16 @@
 # Multi-stage build for AWS ECS deployment
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
 
-# Install Node.js 18
-RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
-RUN yum install -y nodejs
+# Update system and install build dependencies
+RUN yum update -y && \
+    yum groupinstall -y "Development Tools" && \
+    yum install -y curl tar gzip
+
+# Install Node.js 18 from official binary distribution
+RUN curl -fsSL https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
+
+# Verify Node.js installation
+RUN node --version && npm --version
 
 # Set working directory
 WORKDIR /app
@@ -23,9 +30,11 @@ RUN useradd -r -s /bin/false nodejs
 # Production stage
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
 
-# Install Node.js 18
-RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
-RUN yum install -y nodejs
+# Install runtime dependencies only
+RUN yum update -y && yum install -y curl
+
+# Install Node.js 18 from official binary distribution
+RUN curl -fsSL https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
 
 # Install dumb-init for proper signal handling
 RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
@@ -50,7 +59,7 @@ EXPOSE 3001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+  CMD node -e "require('\''http'\'').get('\''http://localhost:3001/health'\'', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
