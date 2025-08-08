@@ -47,7 +47,7 @@ async function setupMiddleware(app) {
 
   app.addHook('onRequest', (request, reply, done) => {
     const start = Date.now();
-    reply.addHook('onResponse', (request, reply, done) => {
+    reply.hook('onResponse', (request, reply, done) => {
       const duration = Date.now() - start;
       console.log(`${request.method} ${request.url} - ${reply.statusCode} - ${duration}ms`);
       done();
