@@ -1,8 +1,8 @@
 # Multi-stage build for AWS ECS deployment (AL2 + Node 16, glibc-compatible)
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
 
-# Install required tools
-RUN yum update -y && yum install -y curl tar gzip xz
+# Install required tools (incl. useradd via shadow-utils)
+RUN yum update -y && yum install -y curl tar gzip xz shadow-utils
 
 # Install Node.js 16 (compatible with glibc 2.26 on AL2)
 RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz \
@@ -15,12 +15,15 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev && npm cache clean --force
 COPY . .
-RUN useradd -r -s /bin/false nodejs
+
+# Create non-root user
+RUN groupadd -g 1001 nodejs && useradd -r -u 1001 -g nodejs -s /sbin/nologin nodejs
 
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
-RUN yum update -y && yum install -y curl tar gzip xz
+# Install runtime deps (incl. useradd, tar, xz)
+RUN yum update -y && yum install -y curl tar gzip xz shadow-utils
 
-# Install Node 16 in production too
+# Install Node 16 in production
 RUN curl -fsSL https://nodejs.org/dist/v16.20.2/node-v16.20.2-linux-x64.tar.xz \
   | tar -xJ -C /usr/local --strip-components=1
 
@@ -29,8 +32,10 @@ RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releas
   && chmod +x /usr/local/bin/dumb-init
 
 WORKDIR /app
-RUN useradd -r -s /bin/false nodejs
+# Create same user/group
+RUN groupadd -g 1001 nodejs && useradd -r -u 1001 -g nodejs -s /sbin/nologin nodejs
 
+# Copy app
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/src ./src
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
