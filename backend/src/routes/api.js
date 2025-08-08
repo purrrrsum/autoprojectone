@@ -16,7 +16,7 @@ const apiRoutes = async (fastify, options) => {
       const interests = ['science', 'tech', 'politics', 'personal'];
       
       for (const interest of interests) {
-        const count = await redis.llen(`queue:${interest}`);
+        const count = await redis.lLen(`queue:${interest}`);
         queueStats[interest] = count;
       }
 
@@ -52,7 +52,7 @@ const apiRoutes = async (fastify, options) => {
       const queueStats = {};
 
       for (const interest of interests) {
-        const count = await redis.llen(`queue:${interest}`);
+        const count = await redis.lLen(`queue:${interest}`);
         queueStats[interest] = count;
       }
 

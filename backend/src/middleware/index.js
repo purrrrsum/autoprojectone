@@ -45,13 +45,7 @@ async function setupMiddleware(app) {
   app.addHook('preHandler', corsMiddleware);
   app.addHook('preHandler', securityMiddleware);
 
-  app.addHook('onRequest', (request, reply, done) => {
-    const start = Date.now();
-    reply.hook('onResponse', (request, reply, done) => {
-      const duration = Date.now() - start;
-      console.log(`${request.method} ${request.url} - ${reply.statusCode} - ${duration}ms`);
-      done();
-    });
+
     done();
   });
 
@@ -83,3 +77,4 @@ async function setupMiddleware(app) {
 }
 
 module.exports = { setupMiddleware }; 
+
