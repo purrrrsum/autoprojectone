@@ -1,7 +1,9 @@
 # Multi-stage build for AWS ECS deployment
-# Instead of node:18-alpine, use:
-FROM amazonlinux:2
-# Then install Node.js manually
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
+
+# Install Node.js 18
+RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+RUN yum install -y nodejs
 
 # Set working directory
 WORKDIR /app
@@ -16,21 +18,24 @@ RUN npm install --omit=dev && npm cache clean --force
 COPY . .
 
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+RUN useradd -r -s /bin/false nodejs
 
 # Production stage
-FROM node:18-alpine AS production
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
+
+# Install Node.js 18
+RUN curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+RUN yum install -y nodejs
 
 # Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+RUN chmod +x /usr/local/bin/dumb-init
 
 # Create app directory
 WORKDIR /app
 
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+RUN useradd -r -s /bin/false nodejs
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
@@ -51,5 +56,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application
-
-CMD ["node", "src/index.js"] 
+CMD ["node", "src/index.js"]
