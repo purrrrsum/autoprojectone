@@ -5,7 +5,7 @@ const { setupMiddleware } = require('./middleware');
 const { setupRoutes } = require('./routes');
 const { setupWebSocket } = require('./services/websocket');
 const { setupMatchingEngine } = require('./services/matchingEngine');
-const { initializeRedis } = require('./services/redis');
+const { initializeRedis, redisClient } = require('./services/redis');
 const { startMatchingEngine } = require('./services/matching');
 
 const PORT = process.env.PORT || 3001;
@@ -24,7 +24,7 @@ async function startServer() {
     await setupDatabase();
     await setupMiddleware(app);
     await setupRoutes(app);
-    await initializeRedis();
+    const redisClient = await initializeRedis();
     await startMatchingEngine();
 
     await app.listen({ port: PORT, host: HOST });
