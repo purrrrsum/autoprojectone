@@ -3,8 +3,7 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS builder
 
 # Update system and install build dependencies
 RUN yum update -y && \
-    yum groupinstall -y "Development Tools" && \
-    yum install -y curl tar gzip
+    yum install -y curl tar gzip xz
 
 # Install Node.js 18 from official binary distribution
 RUN curl -fsSL https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
@@ -30,8 +29,8 @@ RUN useradd -r -s /bin/false nodejs
 # Production stage
 FROM public.ecr.aws/amazonlinux/amazonlinux:2 AS production
 
-# Install runtime dependencies only
-RUN yum update -y && yum install -y curl
+# Install runtime dependencies including tar and xz
+RUN yum update -y && yum install -y curl tar gzip xz
 
 # Install Node.js 18 from official binary distribution
 RUN curl -fsSL https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
