@@ -215,7 +215,7 @@ class WebSocketService {
 
   async addToMatchingQueue(userId, interest) {
     const redis = getRedisClient();
-    await redis.lpush(`queue:${interest}`, userId);
+    await redis.lPush(`queue:${interest}`, userId);
   }
 
   async removeFromMatchingQueue(userId) {
@@ -223,7 +223,7 @@ class WebSocketService {
     const interests = ['science', 'tech', 'politics', 'personal'];
     
     for (const interest of interests) {
-      await redis.lrem(`queue:${interest}`, 0, userId);
+      await redis.lRem(`queue:${interest}`, 0, userId);
     }
   }
 
@@ -305,8 +305,8 @@ class WebSocketService {
     const redis = getRedisClient();
     const queueKey = `queue:${interest}`;
     
-    const user1 = await redis.rpop(queueKey);
-    const user2 = await redis.rpop(queueKey);
+    const user1 = await redis.rPop(queueKey);
+    const user2 = await redis.rPop(queueKey);
     
     if (user1 && user2) {
       await this.createChatSession(user1, user2, interest);

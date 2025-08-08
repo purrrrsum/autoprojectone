@@ -36,11 +36,11 @@ class MatchingEngine {
     const queueKey = `queue:${interest}`;
     
     try {
-      const queueLength = await redis.llen(queueKey);
+      const queueLength = await redis.lLen(queueKey);
       
       if (queueLength >= 2) {
-        const user1 = await redis.rpop(queueKey);
-        const user2 = await redis.rpop(queueKey);
+        const user1 = await redis.rPop(queueKey);
+        const user2 = await redis.rPop(queueKey);
         
         if (user1 && user2) {
           await this.createChatSession(user1, user2, interest);
@@ -103,7 +103,7 @@ class MatchingEngine {
     const stats = {};
     
     for (const interest of this.interests) {
-      const count = await redis.llen(`queue:${interest}`);
+      const count = await redis.lLen(`queue:${interest}`);
       stats[interest] = count;
     }
     
