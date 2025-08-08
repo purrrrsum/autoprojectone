@@ -178,6 +178,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger to automatically track custom keyword usage
+DROP TRIGGER IF EXISTS track_custom_keyword_usage ON users;
 CREATE TRIGGER track_custom_keyword_usage
   AFTER INSERT ON users
   FOR EACH ROW
