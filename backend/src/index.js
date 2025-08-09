@@ -21,6 +21,11 @@ async function startServer() {
       trustProxy: true
     });
 
+    // Add a simple test endpoint first
+    app.get('/test', async (request, reply) => {
+      return { message: 'Container is working!', timestamp: new Date().toISOString() };
+    });
+
     await setupDatabase();
     await setupMiddleware(app);
     await setupRoutes(app);
