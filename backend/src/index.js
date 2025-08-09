@@ -35,9 +35,11 @@ async function startServer() {
     await app.listen({ port: PORT, host: HOST });
     console.log(`Server running on http://${HOST}:${PORT}`);
 
-    const wss = new WebSocket.Server({ server: app.server });
-    setupWebSocket(wss, redisClient); // Assuming setupWebSocket takes redis
-    setupMatchingEngine();
+    // WebSocket server setup - use the underlying HTTP server
+    const wss = new WebSocket.Server({ server: app.server.server || app.server });
+    setupWebSocket(wss, redisClient);
+
+    console.log('WebSocket server initialized');
 
     console.log('Chat application backend initialized successfully');
 
