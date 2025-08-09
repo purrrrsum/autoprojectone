@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { getRedisClient } = require('../database/connection');
 
 async function authMiddleware(request, reply) {
-  const publicRoutes = ['/health', '/health/basic', '/health/full', '/health/live', '/health/ready', '/health/database', '/health/redis', '/api/health', '/api/stats'];
+  const publicRoutes = ['/health', '/health/basic', '/health/full', '/health/live', '/health/ready', '/health/database', '/health/redis', '/api/health', '/api/stats', '/test'];
   if (publicRoutes.includes(request.url)) {
     return;
   }
