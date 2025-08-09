@@ -2,7 +2,7 @@ const { authMiddleware, rateLimitMiddleware, corsMiddleware, securityMiddleware 
 
 async function setupMiddleware(app) {
   await app.register(require('@fastify/cors'), {
-    origin: process.env.NODE_ENV === 'production' 
+    origin: process.env.NODE_ENV === 'production'
       ? ['https://rant.zone', 'https://www.rant.zone']
       : ['http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
@@ -45,13 +45,9 @@ async function setupMiddleware(app) {
   app.addHook('preHandler', corsMiddleware);
   app.addHook('preHandler', securityMiddleware);
 
-
-    done();
-  });
-
   app.setErrorHandler((error, request, reply) => {
     console.error('Request error:', error);
-    
+
     if (error.validation) {
       return reply.status(400).send({
         error: 'Validation Error',
@@ -69,12 +65,11 @@ async function setupMiddleware(app) {
 
     reply.status(500).send({
       error: 'Internal Server Error',
-      message: process.env.NODE_ENV === 'production' 
-        ? 'Something went wrong' 
+      message: process.env.NODE_ENV === 'production'
+        ? 'Something went wrong'
         : error.message
     });
   });
 }
 
-module.exports = { setupMiddleware }; 
-
+module.exports = { setupMiddleware };
