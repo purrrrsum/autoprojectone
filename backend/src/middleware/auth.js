@@ -2,13 +2,13 @@ const jwt = require('jsonwebtoken');
 const { getRedisClient } = require('../database/connection');
 
 async function authMiddleware(request, reply) {
-  const publicRoutes = ['/health', '/api/health', '/api/stats'];
+  const publicRoutes = ['/health', '/health/basic', '/health/full', '/health/live', '/health/ready', '/health/database', '/health/redis', '/api/health', '/api/stats'];
   if (publicRoutes.includes(request.url)) {
     return;
   }
 
   const token = request.headers.authorization?.replace('Bearer ', '');
-  
+
   if (!token) {
     return reply.status(401).send({
       error: 'Unauthorized',
@@ -30,14 +30,14 @@ async function authMiddleware(request, reply) {
 async function rateLimitMiddleware(request, reply) {
   const redis = getRedisClient();
   const key = `rate_limit:${request.ip}`;
-  
+
   try {
     const current = await redis.incr(key);
-    
+
     if (current === 1) {
       await redis.expire(key, 60);
     }
-    
+
     if (current > 100) {
       return reply.status(429).send({
         error: 'Too Many Requests',
@@ -52,7 +52,7 @@ async function rateLimitMiddleware(request, reply) {
 function corsMiddleware(request, reply) {
   const origin = request.headers.origin;
   const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? ['https://rant.zone', 'https://www.rant.zone']
+    ? ['https://rant.zone', 'https://www.rant.zone', 'http://rant-zone-frontend-7115.s3-website-us-east-1.amazonaws.com']
     : ['http://localhost:3000', 'http://localhost:3001'];
 
   if (origin && allowedOrigins.includes(origin)) {
@@ -71,7 +71,7 @@ function securityMiddleware(request, reply) {
   reply.header('Referrer-Policy', 'strict-origin-when-cross-origin');
   reply.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   reply.header('Server', 'RantZone');
-  
+
   const csp = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline'",
@@ -83,7 +83,7 @@ function securityMiddleware(request, reply) {
     "media-src 'none'",
     "frame-src 'none'"
   ].join('; ');
-  
+
   reply.header('Content-Security-Policy', csp);
 }
 
@@ -92,4 +92,4 @@ module.exports = {
   rateLimitMiddleware,
   corsMiddleware,
   securityMiddleware
-}; 
+};
