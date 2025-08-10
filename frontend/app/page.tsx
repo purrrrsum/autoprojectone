@@ -24,11 +24,19 @@ export default function Home() {
   } = useStore();
 
   if (error) {
-    return <ErrorMessage message={error} />;
+    return (
+      <div className="min-h-screen theme-background flex items-center justify-center">
+        <ErrorMessage message={error} />
+      </div>
+    );
   }
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen theme-background flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
@@ -52,22 +60,42 @@ export default function Home() {
         {/* Progress Indicator */}
         <div className="max-w-md mx-auto mb-8">
           <div className="flex items-center justify-between">
-            <div className={`flex items-center ${currentView === 'activity-selector' ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentView === 'activity-selector' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
+            <div className={`flex items-center ${currentView === 'activity-selector' ? 'theme-text' : 'theme-text-tertiary'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                currentView === 'activity-selector' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'theme-card border-2'
+              }`}>
                 1
               </div>
               <span className="ml-2 text-sm font-medium">Activity</span>
             </div>
-            <div className={`flex-1 h-1 mx-4 ${currentView !== 'activity-selector' ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-            <div className={`flex items-center ${currentView === 'keyword-selector' ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentView === 'keyword-selector' ? 'bg-blue-600 text-white' : currentView !== 'activity-selector' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
+            <div className={`flex-1 h-1 mx-4 ${
+              currentView !== 'activity-selector' ? 'bg-blue-500' : 'theme-card'
+            }`}></div>
+            <div className={`flex items-center ${currentView === 'keyword-selector' ? 'theme-text' : 'theme-text-tertiary'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                currentView === 'keyword-selector' 
+                  ? 'bg-blue-500 text-white' 
+                  : currentView !== 'activity-selector' 
+                    ? 'bg-blue-500 text-white' 
+                    : 'theme-card border-2'
+              }`}>
                 2
               </div>
               <span className="ml-2 text-sm font-medium">Topic</span>
             </div>
-            <div className={`flex-1 h-1 mx-4 ${currentView === 'emotion-selector' || currentView === 'chat' ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-            <div className={`flex items-center ${currentView === 'emotion-selector' ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentView === 'emotion-selector' ? 'bg-blue-600 text-white' : currentView === 'chat' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
+            <div className={`flex-1 h-1 mx-4 ${
+              currentView === 'emotion-selector' || currentView === 'chat' ? 'bg-blue-500' : 'theme-card'
+            }`}></div>
+            <div className={`flex items-center ${currentView === 'emotion-selector' ? 'theme-text' : 'theme-text-tertiary'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                currentView === 'emotion-selector' 
+                  ? 'bg-blue-500 text-white' 
+                  : currentView === 'chat' 
+                    ? 'bg-blue-500 text-white' 
+                    : 'theme-card border-2'
+              }`}>
                 3
               </div>
               <span className="ml-2 text-sm font-medium">Mood</span>
@@ -126,7 +154,7 @@ export default function Home() {
                   useStore.getState().setCurrentView('keyword-selector');
                 }
               }}
-              className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              className="px-6 py-3 theme-card border-2 theme-text hover:border-blue-500 hover:text-blue-500 transition-colors rounded-lg"
             >
               Back
             </button>

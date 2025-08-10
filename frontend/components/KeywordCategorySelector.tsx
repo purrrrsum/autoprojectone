@@ -13,78 +13,67 @@ const keywordCategories = [
     id: 'personal-feelings' as KeywordCategory,
     title: 'Personal Feelings',
     description: 'Deep emotions, life struggles, personal growth',
-    icon: '💭',
-    color: 'bg-purple-100 border-purple-300'
+    icon: '💭'
   },
   {
     id: 'tech-rant' as KeywordCategory,
     title: 'Tech Rant',
     description: 'Software bugs, hardware issues, digital frustrations',
-    icon: '💻',
-    color: 'bg-blue-100 border-blue-300'
+    icon: '💻'
   },
   {
     id: 'office-rant' as KeywordCategory,
     title: 'Office Rant',
     description: 'Work stress, colleagues, meetings, deadlines',
-    icon: '🏢',
-    color: 'bg-gray-100 border-gray-300'
+    icon: '🏢'
   },
   {
     id: 'social-rant' as KeywordCategory,
     title: 'Social Rant',
     description: 'Social media, relationships, society issues',
-    icon: '👥',
-    color: 'bg-green-100 border-green-300'
+    icon: '👥'
   },
   {
     id: 'relationship-rant' as KeywordCategory,
     title: 'Relationship Rant',
     description: 'Dating, family, friendships, love life',
-    icon: '❤️',
-    color: 'bg-pink-100 border-pink-300'
+    icon: '❤️'
   },
   {
     id: 'health-rant' as KeywordCategory,
     title: 'Health Rant',
     description: 'Medical issues, fitness, wellness struggles',
-    icon: '🏥',
-    color: 'bg-red-100 border-red-300'
+    icon: '🏥'
   },
   {
     id: 'money-rant' as KeywordCategory,
     title: 'Money Rant',
     description: 'Financial stress, bills, investments, economy',
-    icon: '💰',
-    color: 'bg-yellow-100 border-yellow-300'
+    icon: '💰'
   },
   {
     id: 'education-rant' as KeywordCategory,
     title: 'Education Rant',
     description: 'School, college, learning, academic stress',
-    icon: '📚',
-    color: 'bg-indigo-100 border-indigo-300'
+    icon: '📚'
   },
   {
     id: 'politics-rant' as KeywordCategory,
     title: 'Politics Rant',
     description: 'Political views, current events, government',
-    icon: '🗳️',
-    color: 'bg-orange-100 border-orange-300'
+    icon: '🗳️'
   },
   {
     id: 'entertainment-rant' as KeywordCategory,
     title: 'Entertainment Rant',
     description: 'Movies, music, games, pop culture',
-    icon: '🎬',
-    color: 'bg-teal-100 border-teal-300'
+    icon: '🎬'
   },
   {
     id: 'custom' as KeywordCategory,
     title: 'Custom Topic',
     description: 'Create your own rant category',
-    icon: '✨',
-    color: 'bg-gradient-to-r from-purple-100 to-pink-100 border-purple-300'
+    icon: '✨'
   }
 ];
 
@@ -120,8 +109,8 @@ export default function KeywordCategorySelector({
             className={`
               p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 theme-card
               ${selectedCategory === category.id
-                ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-                : 'hover:border-gray-300 hover:shadow-md'
+                ? 'border-blue-500 shadow-lg scale-105'
+                : 'hover:border-blue-300 hover:shadow-md'
               }
             `}
           >
@@ -154,9 +143,9 @@ export default function KeywordCategorySelector({
 
       {selectedCategory && (
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full">
-            <span className="mr-2">Selected:</span>
-            <span className="font-semibold">
+          <div className="inline-flex items-center px-4 py-2 theme-card border-2 border-purple-200 rounded-full">
+            <span className="mr-2 theme-text-secondary">Selected:</span>
+            <span className="font-semibold theme-text">
               {keywordCategories.find(c => c.id === selectedCategory)?.title}
               {selectedCategory === 'custom' && customKeyword && ` - ${customKeyword}`}
             </span>

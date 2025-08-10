@@ -12,78 +12,67 @@ const emotionalStates = [
     id: 'angry' as EmotionalState,
     title: 'Angry',
     description: 'Frustrated, irritated, mad',
-    icon: '😠',
-    color: 'bg-red-100 border-red-300'
+    icon: '😠'
   },
   {
     id: 'sad' as EmotionalState,
     title: 'Sad',
     description: 'Depressed, lonely, down',
-    icon: '😢',
-    color: 'bg-blue-100 border-blue-300'
+    icon: '😢'
   },
   {
     id: 'happy' as EmotionalState,
     title: 'Happy',
     description: 'Joyful, excited, positive',
-    icon: '😊',
-    color: 'bg-yellow-100 border-yellow-300'
+    icon: '😊'
   },
   {
     id: 'frustrated' as EmotionalState,
     title: 'Frustrated',
     description: 'Annoyed, stressed, overwhelmed',
-    icon: '😤',
-    color: 'bg-orange-100 border-orange-300'
+    icon: '😤'
   },
   {
     id: 'excited' as EmotionalState,
     title: 'Excited',
     description: 'Energetic, enthusiastic, pumped',
-    icon: '🤩',
-    color: 'bg-pink-100 border-pink-300'
+    icon: '🤩'
   },
   {
     id: 'anxious' as EmotionalState,
     title: 'Anxious',
     description: 'Worried, nervous, tense',
-    icon: '😰',
-    color: 'bg-purple-100 border-purple-300'
+    icon: '😰'
   },
   {
     id: 'calm' as EmotionalState,
     title: 'Calm',
     description: 'Peaceful, relaxed, serene',
-    icon: '😌',
-    color: 'bg-green-100 border-green-300'
+    icon: '😌'
   },
   {
     id: 'confused' as EmotionalState,
     title: 'Confused',
     description: 'Lost, uncertain, puzzled',
-    icon: '😵',
-    color: 'bg-gray-100 border-gray-300'
+    icon: '😵'
   },
   {
     id: 'grateful' as EmotionalState,
     title: 'Grateful',
     description: 'Thankful, appreciative, blessed',
-    icon: '🙏',
-    color: 'bg-teal-100 border-teal-300'
+    icon: '🙏'
   },
   {
     id: 'hopeful' as EmotionalState,
     title: 'Hopeful',
     description: 'Optimistic, positive, looking forward',
-    icon: '✨',
-    color: 'bg-indigo-100 border-indigo-300'
+    icon: '✨'
   },
   {
     id: 'none' as EmotionalState,
     title: 'Skip This',
     description: 'I prefer not to share my mood',
-    icon: '🤐',
-    color: 'bg-gray-50 border-gray-200'
+    icon: '🤐'
   }
 ];
 
@@ -108,8 +97,8 @@ export default function EmotionalStateSelector({
             className={`
               p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 theme-card
               ${selectedEmotion === emotion.id
-                ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-                : 'hover:border-gray-300 hover:shadow-md'
+                ? 'border-blue-500 shadow-lg scale-105'
+                : 'hover:border-blue-300 hover:shadow-md'
               }
             `}
           >
@@ -124,9 +113,9 @@ export default function EmotionalStateSelector({
 
       {selectedEmotion && (
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-pink-100 text-pink-800 rounded-full">
-            <span className="mr-2">Selected:</span>
-            <span className="font-semibold">
+          <div className="inline-flex items-center px-4 py-2 theme-card border-2 border-pink-200 rounded-full">
+            <span className="mr-2 theme-text-secondary">Selected:</span>
+            <span className="font-semibold theme-text">
               {emotionalStates.find(e => e.id === selectedEmotion)?.title}
             </span>
           </div>
@@ -136,7 +125,7 @@ export default function EmotionalStateSelector({
       <div className="mt-8 text-center">
         <button
           onClick={onSkip}
-          className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+          className="px-6 py-3 theme-card border-2 theme-text hover:border-blue-500 hover:text-blue-500 transition-colors rounded-lg"
         >
           Skip This Step
         </button>
