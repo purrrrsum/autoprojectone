@@ -93,9 +93,9 @@ class EncryptionService {
     const ciphertext = encryptedArray.slice(0, -16);
 
     return {
-      encrypted: this.arrayBufferToBase64(ciphertext),
-      iv: this.arrayBufferToBase64(iv),
-      tag: this.arrayBufferToBase64(tag),
+      encrypted: this.arrayBufferToBase64(ciphertext.buffer),
+      iv: this.arrayBufferToBase64(iv.buffer),
+      tag: this.arrayBufferToBase64(tag.buffer),
     };
   }
 

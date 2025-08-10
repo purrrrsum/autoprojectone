@@ -100,7 +100,7 @@ export const useStore = create<AppState>((set, get) => ({
         activityLevel,
         keywordCategory,
         customKeyword: keywordCategory === 'custom' ? customKeyword : undefined,
-        emotionalState: emotion === 'none' ? undefined : emotion,
+        emotionalState: emotion,
         gender: undefined // Optional gender selection
       };
       set({ userPreferences: preferences });

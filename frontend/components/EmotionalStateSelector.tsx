@@ -95,59 +95,51 @@ export default function EmotionalStateSelector({
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">How Are You Feeling?</h2>
-        <p className="text-lg text-gray-600">This helps us match you with someone who understands your mood</p>
-        <p className="text-sm text-gray-500 mt-2">(Optional - you can skip this step)</p>
+        <h2 className="text-3xl font-bold theme-text mb-4">How Are You Feeling?</h2>
+        <p className="text-lg theme-text-secondary">This helps us match you with someone who understands your mood</p>
+        <p className="text-sm theme-text-tertiary mt-2">(Optional - you can skip this step)</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {emotionalStates.map((emotion) => (
           <div
             key={emotion.id}
             onClick={() => onSelectEmotion(emotion.id)}
             className={`
-              relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200
+              p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 theme-card
               ${selectedEmotion === emotion.id
                 ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-                : `${emotion.color} hover:shadow-md`
+                : 'hover:border-gray-300 hover:shadow-md'
               }
             `}
           >
-            {selectedEmotion === emotion.id && (
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm">✓</span>
-              </div>
-            )}
-
             <div className="text-center">
               <div className="text-3xl mb-2">{emotion.icon}</div>
-              <h3 className="font-semibold text-gray-900 mb-1">{emotion.title}</h3>
-              <p className="text-sm text-gray-600">{emotion.description}</p>
+              <h3 className="font-semibold theme-text text-sm">{emotion.title}</h3>
+              <p className="theme-text-secondary text-xs mt-1">{emotion.description}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="flex justify-center space-x-4">
-        <button
-          onClick={onSkip}
-          className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-        >
-          Skip This Step
-        </button>
-        
-        {selectedEmotion && selectedEmotion !== 'none' && (
-          <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full">
-            <span className="mr-2">Feeling:</span>
+      {selectedEmotion && (
+        <div className="mt-8 text-center">
+          <div className="inline-flex items-center px-4 py-2 bg-pink-100 text-pink-800 rounded-full">
+            <span className="mr-2">Selected:</span>
             <span className="font-semibold">
               {emotionalStates.find(e => e.id === selectedEmotion)?.title}
             </span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      <div className="mt-8 text-center text-sm text-gray-500">
-        <p>💡 <strong>Mood matching:</strong> We'll try to connect you with someone in a similar emotional state for better understanding.</p>
+      <div className="mt-8 text-center">
+        <button
+          onClick={onSkip}
+          className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+        >
+          Skip This Step
+        </button>
       </div>
     </div>
   );

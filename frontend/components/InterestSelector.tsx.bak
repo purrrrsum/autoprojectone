@@ -1,0 +1,32 @@
+'use client';
+
+import { useStore } from '@/lib/store';
+import type { Interest } from '@/types';
+
+const interests: Interest[] = ['science', 'tech', 'politics', 'personal'];
+
+export default function InterestSelector() {
+  const { joinChat } = useStore();
+
+  const handleInterestSelect = async (interest: Interest) => {
+    try {
+      await joinChat(interest);
+    } catch (error) {
+      console.error('Failed to join chat:', error);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      {interests.map((interest) => (
+        <button
+          key={interest}
+          onClick={() => handleInterestSelect(interest)}
+          className="w-full p-4 text-left bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors capitalize"
+        >
+          {interest}
+        </button>
+      ))}
+    </div>
+  );
+} 

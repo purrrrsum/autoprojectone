@@ -102,78 +102,63 @@ export default function KeywordCategorySelector({
       setShowCustomInput(true);
     } else {
       setShowCustomInput(false);
-      onCustomKeywordChange('');
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">What's Your Rant About?</h2>
-        <p className="text-lg text-gray-600">Choose a category or create your own</p>
+        <h2 className="text-3xl font-bold theme-text mb-4">What's on your mind?</h2>
+        <p className="text-lg theme-text-secondary">Pick a topic or create your own</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {keywordCategories.map((category) => (
           <div
             key={category.id}
             onClick={() => handleCategorySelect(category.id)}
             className={`
-              relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200
+              p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 theme-card
               ${selectedCategory === category.id
                 ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-                : `${category.color} hover:shadow-md`
+                : 'hover:border-gray-300 hover:shadow-md'
               }
             `}
           >
-            {selectedCategory === category.id && (
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm">✓</span>
-              </div>
-            )}
-
-            <div className="flex items-center space-x-3">
-              <div className="text-2xl">{category.icon}</div>
-              <div>
-                <h3 className="font-semibold text-gray-900">{category.title}</h3>
-                <p className="text-sm text-gray-600">{category.description}</p>
-              </div>
+            <div className="text-center">
+              <div className="text-3xl mb-2">{category.icon}</div>
+              <h3 className="font-semibold theme-text text-sm">{category.title}</h3>
+              <p className="theme-text-secondary text-xs mt-1">{category.description}</p>
             </div>
           </div>
         ))}
       </div>
 
       {showCustomInput && (
-        <div className="max-w-md mx-auto">
-          <div className="bg-white p-6 rounded-lg border-2 border-blue-300 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Custom Category</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Rant Topic
-                </label>
-                <input
-                  type="text"
-                  value={customKeyword}
-                  onChange={(e) => onCustomKeywordChange(e.target.value)}
-                  placeholder="e.g., pet peeves, travel frustrations, cooking disasters..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <div className="text-sm text-gray-600">
-                <p>💡 <strong>Pro tip:</strong> If 10+ people use this topic within 30 days, it becomes a permanent category!</p>
-              </div>
-            </div>
+        <div className="mt-8 max-w-md mx-auto">
+          <div className="theme-card rounded-lg p-6">
+            <h3 className="text-lg font-semibold theme-text mb-4">Create Your Own Topic</h3>
+            <input
+              type="text"
+              value={customKeyword}
+              onChange={(e) => onCustomKeywordChange(e.target.value)}
+              placeholder="Enter your custom topic..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent theme-text bg-transparent"
+            />
+            <p className="text-sm theme-text-secondary mt-2">
+              This will help us match you with someone who shares your interests.
+            </p>
           </div>
         </div>
       )}
 
       {selectedCategory && (
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full">
+          <div className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full">
             <span className="mr-2">Selected:</span>
             <span className="font-semibold">
-              {selectedCategory === 'custom' ? customKeyword || 'Custom Topic' : keywordCategories.find(c => c.id === selectedCategory)?.title}
+              {keywordCategories.find(c => c.id === selectedCategory)?.title}
+              {selectedCategory === 'custom' && customKeyword && ` - ${customKeyword}`}
             </span>
           </div>
         </div>

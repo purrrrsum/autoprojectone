@@ -34,8 +34,8 @@ export default function ActivityLevelSelector({ selectedLevel, onSelect }: Activ
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Rant Style</h2>
-        <p className="text-lg text-gray-600">How active do you want to be today?</p>
+        <h2 className="text-3xl font-bold theme-text mb-4">Choose Your Rant Style</h2>
+        <p className="text-lg theme-text-secondary">How active do you want to be today?</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -44,10 +44,10 @@ export default function ActivityLevelSelector({ selectedLevel, onSelect }: Activ
             key={level.id}
             onClick={() => onSelect(level.id)}
             className={`
-              relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-200
+              relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-200 theme-card
               ${selectedLevel === level.id
                 ? 'border-blue-500 bg-blue-50 shadow-lg scale-105'
-                : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
+                : 'hover:border-gray-300 hover:shadow-md'
               }
             `}
           >
@@ -59,12 +59,12 @@ export default function ActivityLevelSelector({ selectedLevel, onSelect }: Activ
 
             <div className="text-center">
               <div className="text-4xl mb-4">{level.icon}</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{level.title}</h3>
-              <p className="text-gray-600 mb-4 text-sm">{level.description}</p>
+              <h3 className="text-xl font-semibold theme-text mb-2">{level.title}</h3>
+              <p className="theme-text-secondary mb-4 text-sm">{level.description}</p>
               
               <div className="space-y-2">
                 {level.features.map((feature, index) => (
-                  <div key={index} className="flex items-center text-sm text-gray-700">
+                  <div key={index} className="flex items-center text-sm theme-text-secondary">
                     <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                     {feature}
                   </div>

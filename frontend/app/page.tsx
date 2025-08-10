@@ -6,6 +6,7 @@ import KeywordCategorySelector from '../components/KeywordCategorySelector';
 import EmotionalStateSelector from '../components/EmotionalStateSelector';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function Home() {
   const {
@@ -31,12 +32,21 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen theme-background">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Rant.Zone</h1>
-          <p className="text-lg text-gray-600">Anonymous ephemeral chat with perfect matches</p>
+        {/* Header with Logo and Theme Toggle */}
+        <div className="flex justify-between items-center mb-8">
+          {/* Logo and Title */}
+          <div className="flex items-center">
+            <img src="/rantsvg.svg" alt="Rant.Zone Logo" className="w-12 h-12 mr-4 logo" />
+            <div>
+              <h1 className="text-4xl font-bold theme-text mb-2">Rant.Zone</h1>
+              <p className="text-lg theme-text-secondary">Anonymous ephemeral chat with perfect matches</p>
+            </div>
+          </div>
+          
+          {/* Theme Toggle */}
+          <ThemeToggle />
         </div>
 
         {/* Progress Indicator */}
@@ -92,9 +102,9 @@ export default function Home() {
 
         {currentView === 'chat' && (
           <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Chat Interface</h2>
-              <p className="text-gray-600 mb-6">Your chat interface will be implemented here</p>
+            <div className="theme-card rounded-lg shadow-lg p-8">
+              <h2 className="text-2xl font-bold theme-text mb-4">Chat Interface</h2>
+              <p className="theme-text-secondary mb-6">Your chat interface will be implemented here</p>
               <button
                 onClick={() => useStore.getState().leaveChat()}
                 className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
