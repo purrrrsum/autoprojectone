@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 type Theme = 'light' | 'dark' | 'system';
 
 export default function ThemeToggle() {
-  const [currentTheme, setCurrentTheme] = useState<Theme>('system');
+  const [currentTheme, setCurrentTheme] = useState<Theme>('dark'); // Changed default to 'dark'
 
   useEffect(() => {
     // Load saved theme from localStorage
@@ -13,6 +13,9 @@ export default function ThemeToggle() {
     if (savedTheme) {
       setCurrentTheme(savedTheme);
       applyTheme(savedTheme);
+    } else {
+      // If no saved theme, apply dark theme as default
+      applyTheme('dark');
     }
   }, []);
 
